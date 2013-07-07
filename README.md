@@ -3,7 +3,8 @@
 This is a Puppet module for openssh.
 It manages its installation, configuration and service.
 
-The blueprint of this module is from http://github.com/Example42-templates/
+The module is based on stdmod naming standars.
+Refer to http://github.com/stdmod/
 
 Released under the terms of Apache 2 License.
 
@@ -32,40 +33,23 @@ Released under the terms of Apache 2 License.
           version => 'latest',
         }
 
-* Enable openssh service (both at boot and runtime). This is default.
+* Enable openssh service. This is default.
 
         class { 'openssh':
-          status => 'enabled',
+          service_ensure => 'running',
         }
 
-* Disable openssh service (both at boot and runtime)
+* Enable openssh service at boot. This is default.
 
         class { 'openssh':
-          status => 'disabled',
+          service_status => 'enabled',
         }
 
-* Ensure service is running but don't manage if is disabled at boot
+
+* Do not automatically restart services when configuration files change (Default: Class['openssh::config']).
 
         class { 'openssh':
-          status => 'running',
-        }
-
-* Ensure service is disabled at boot and do not check it is running
-
-        class { 'openssh':
-          status => 'deactivated',
-        }
-
-* Do not manage service status and boot condition
-
-        class { 'openssh':
-          status => 'unmanaged',
-        }
-
-* Do not automatically restart services when configuration files change (Default: true).
-
-        class { 'openssh':
-          autorestart => false,
+          service_subscribe => false,
         }
 
 * Enable auditing (on all the arguments)  without making changes on existing openssh configuration *files*
@@ -77,7 +61,7 @@ Released under the terms of Apache 2 License.
 * Module dry-run: Do not make any change on *all* the resources provided by the module
 
         class { 'openssh':
-          noops => true,
+          noop => true,
         }
 
 
@@ -85,8 +69,8 @@ Released under the terms of Apache 2 License.
 * Use custom source for main configuration file 
 
         class { 'openssh':
-          source => [ "puppet:///modules/example42/openssh/openssh.conf-${hostname}" ,
-                      "puppet:///modules/example42/openssh/openssh.conf" ], 
+          file_source => [ "puppet:///modules/example42/openssh/openssh.conf-${hostname}" ,
+                           "puppet:///modules/example42/openssh/openssh.conf" ], 
         }
 
 
@@ -114,14 +98,14 @@ Released under the terms of Apache 2 License.
 * Use custom template for main config file. Note that template and source arguments are alternative.
 
         class { 'openssh':
-          template => 'example42/openssh/openssh.conf.erb',
+          file_template => 'example42/openssh/openssh.conf.erb',
         }
 
 * Use a custom template and provide an hash of custom configurations that you can use inside the template
 
         class { 'openssh':
-          template => 'example42/openssh/openssh.conf.erb',
-          options  => {
+          filetemplate       => 'example42/openssh/openssh.conf.erb',
+          file_options_hash  => {
             opt  => 'value',
             opt2 => 'value2',
           },
@@ -131,7 +115,7 @@ Released under the terms of Apache 2 License.
 * Specify the name of a custom class to include that provides the dependencies required by the module
 
         class { 'openssh':
-          dependency_class => 'example42::dependency_openssh',
+          class_dependency  => 'site::openssh_dependency',
         }
 
 
@@ -140,8 +124,8 @@ Released under the terms of Apache 2 License.
   Note: Use a subclass name different than openssh to avoid order loading issues.
 
         class { 'openssh':
-          my_class => 'example42::my_openssh',
+         class_my => 'site::openssh_my',
         }
 
 ## TESTING
-[![Build Status](https://travis-ci.org/example42/puppet-openssh.png?branch=master)](https://travis-ci.org/example42/puppet-openssh)
+[![Build Status](https://travis-ci.org/stdmod/puppet-openssh.png?branch=master)](https://travis-ci.org/stdmod/puppet-openssh)
