@@ -40,10 +40,10 @@ class openssh (
   $dir_purge           = false,
   $dir_recurse         = true,
 
-  $class_dependency    = undef,
-  $class_monitor       = 'openssh::monitor',
-  $class_firewall      = 'openssh::firewall',
-  $class_my            = undef,
+  $dependency_class    = undef,
+  $monitor_class       = 'openssh::monitor',
+  $firewall_class      = 'openssh::firewall',
+  $my_class            = undef,
 
   $monitor             = false,
   $monitor_host        = $::ipaddress,
@@ -111,20 +111,20 @@ class openssh (
 
 
   # Extra classes
-  if $openssh::class_dependency {
-    include $openssh::class_dependency
+  if $openssh::dependency_class {
+    include $openssh::dependency_class
   }
 
-  if $openssh::monitor and $openssh::class_monitor {
-    include $openssh::class_monitor
+  if $openssh::monitor and $openssh::monitor_class {
+    include $openssh::monitor_class
   }
 
-  if $openssh::firewall and $openssh::class_firewall {
-    include $openssh::class_firewall
+  if $openssh::firewall and $openssh::firewall_class {
+    include $openssh::firewall_class
   }
 
-  if $openssh::class_my {
-    include $openssh::class_my
+  if $openssh::my_class {
+    include $openssh::my_class
   }
 
 }

@@ -115,7 +115,7 @@ Released under the terms of Apache 2 License.
 * Specify the name of a custom class to include that provides the dependencies required by the module
 
         class { 'openssh':
-          class_dependency  => 'site::openssh_dependency',
+          dependency_class => 'site::openssh_dependency',
         }
 
 
@@ -124,7 +124,7 @@ Released under the terms of Apache 2 License.
   Note: Use a subclass name different than openssh to avoid order loading issues.
 
         class { 'openssh':
-         class_my => 'site::openssh_my',
+         my_class => 'site::openssh_my',
         }
 
 ## TESTING

@@ -72,7 +72,7 @@ describe 'openssh' do
   end
 
   describe 'Test customizations - custom class' do
-    let(:params) { {:class_my => "openssh::spec" } }
+    let(:params) { {:my_class => "openssh::spec" } }
     it { should contain_file('my_config').with_content(/my_content/) }
     it { should contain_file('my_config').with_path('/etc/openssh/my_config') }
   end
