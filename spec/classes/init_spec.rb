@@ -38,13 +38,6 @@ describe 'openssh' do
     it 'should not enable at boot Service[openssh]' do should contain_service('sshd').with_enable('false') end
   end
 
-  describe 'Test noop mode' do
-    let(:params) { {:noop => true} }
-    it { should contain_package('openssh-server').with_noop('true') }
-    it { should contain_service('sshd').with_noop('true') }
-    it { should contain_file('openssh.conf').with_noop('true') }
-  end
-
   describe 'Test custom file via template' do
     let(:params) { {
       :file_template => 'openssh/spec/spec.conf.erb',
@@ -77,10 +70,16 @@ describe 'openssh' do
     it { should contain_file('my_config').with_path('/etc/openssh/my_config') }
   end
 
-  describe 'Test service subscribe' do
-    let(:params) { {:service_subscribe => false } }
+  describe 'Test file notify default' do
+    it 'should automatically restart the service when files change' do
+      should contain_file('openssh.conf').with_notify("Service['openssh']")
+    end
+  end
+
+  describe 'Test file notify to false' do
+    let(:params) { {:file_notify => false } }
     it 'should not automatically restart the service when files change' do
-      should contain_service('sshd').with_subscribe(false)
+      should contain_file('openssh.conf').with_notify(false)
     end
   end
 
