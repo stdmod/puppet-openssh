@@ -14,22 +14,20 @@ class openssh (
   $ensure              = 'present',
   $version             = undef,
   $audit               = undef,
-  $noop                = undef,
 
   $package             = $openssh::params::package,
-  $package_provider    = undef,
 
   $service             = $openssh::params::service,
   $service_ensure      = 'running',
   $service_enable      = true,
-  $service_subscribe   = $openssh::params::service_subscribe,
-  $service_provider    = undef,
 
   $file                = $openssh::params::file,
   $file_owner          = $openssh::params::file_owner,
   $file_group          = $openssh::params::file_group,
   $file_mode           = $openssh::params::file_mode,
   $file_replace        = $openssh::params::file_replace,
+  $file_require        = Package['openssh'],
+  $file_notify         = Service['openssh'],
   $file_source         = undef,
   $file_template       = undef,
   $file_content        = undef,
@@ -98,17 +96,48 @@ class openssh (
 
 
   # Resources Managed
-  class { 'openssh::install':
+
+  if $openssh::package {
+    package { $openssh::package:
+      ensure   => $openssh::managed_package_ensure,
+    }
   }
 
-  class { 'openssh::service':
-    require => Class['openssh::install'],
+  if $openssh::service {
+    service { $openssh::service:
+      ensure     => $openssh::managed_service_ensure,
+      enable     => $openssh::managed_service_enable,
+    }
   }
 
-  class { 'openssh::config':
-    require => Class['openssh::install'],
+  if $openssh::file {
+    file { 'openssh.conf':
+      ensure  => $openssh::file_ensure,
+      path    => $openssh::file,
+      mode    => $openssh::file_mode,
+      owner   => $openssh::file_owner,
+      group   => $openssh::file_group,
+      source  => $openssh::file_source,
+      content => $openssh::managed_file_content,
+      audit   => $openssh::audit,
+      notify  => $openssh::file_notify,
+      require => $openssh::file_require,
+    }
   }
 
+  if $openssh::dir_source {
+    file { 'openssh.dir':
+      ensure  => $openssh::dir_ensure,
+      path    => $openssh::dir,
+      source  => $openssh::dir_source,
+      recurse => $openssh::dir_recurse,
+      purge   => $openssh::dir_purge,
+      force   => $openssh::dir_purge,
+      audit   => $openssh::audit,
+      notify  => $openssh::file_notify,
+      require => $openssh::file_require,
+    }
+  }
 
   # Extra classes
   if $openssh::dependency_class {

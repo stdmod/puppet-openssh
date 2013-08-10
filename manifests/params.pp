@@ -15,8 +15,6 @@ class openssh::params {
     default => 'sshd',
   }
 
-  $service_subscribe = Class['openssh::config']
-
   $file = $::osfamily ? {
     default => '/etc/ssh/sshd_config',
   }
