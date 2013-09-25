@@ -39,21 +39,13 @@ class openssh (
   $dir_recurse         = true,
 
   $dependency_class    = undef,
-  $monitor_class       = 'openssh::monitor',
-  $firewall_class      = 'openssh::firewall',
   $my_class            = undef,
 
-  $monitor             = false,
-  $monitor_host        = $::ipaddress,
-  $monitor_port        = 22,
-  $monitor_protocol    = tcp,
-  $monitor_tool        = '',
+  $monitor_class       = 'openssh::monitor',
+  $monitor_options_hash = { },
 
-  $firewall            = false,
-  $firewall_src        = '0/0',
-  $firewall_dst        = '0/0',
-  $firewall_port       = 22,
-  $firewall_protocol   = tcp
+  $firewall_class      = 'openssh::firewall',
+  $firewall_options_hash = { },
 
   ) inherits openssh::params {
 
@@ -144,11 +136,11 @@ class openssh (
     include $openssh::dependency_class
   }
 
-  if $openssh::monitor and $openssh::monitor_class {
+  if $openssh::monitor_class {
     include $openssh::monitor_class
   }
 
-  if $openssh::firewall and $openssh::firewall_class {
+  if $openssh::firewall_class {
     include $openssh::firewall_class
   }
 
